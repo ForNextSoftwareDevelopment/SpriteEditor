@@ -1023,12 +1023,17 @@ namespace SpriteEditor
             for (int i = 0; i < lines.Length; i++)
             {
                 tbSpriteData.Text += lines[i];
+                if (i == lines.Length - 1)
+                {
+                    tbSpriteData.Text = tbSpriteData.Text.Trim();
+                    tbSpriteData.Text = tbSpriteData.Text.TrimEnd(',');
+                    tbSpriteData.Text = tbSpriteData.Text + "  ";
+                }
+
                 tbSpriteData.Text += comment[i];
                 if (i != lines.Length - 1) tbSpriteData.Text += "\r\n";
             }
 
-            tbSpriteData.Text = tbSpriteData.Text.Trim();
-            tbSpriteData.Text = tbSpriteData.Text.TrimEnd(',');
             tbSpriteData.Text += "\r\n};\r\n\r\n";
         }
 
@@ -1104,12 +1109,17 @@ namespace SpriteEditor
                 for (int j = 0; j < lines.Length; j++)
                 {
                     fileContent += lines[j];
+                    if (j == lines.Length - 1)
+                    {
+                        fileContent =  fileContent.Trim();
+                        fileContent =  fileContent.TrimEnd(',');
+                        fileContent += "  ";
+                    }
+
                     fileContent += comment[j];
                     if (j != lines.Length - 1) fileContent += "\r\n";
                 }
 
-                fileContent = fileContent.Trim();
-                fileContent = fileContent.TrimEnd(',');
                 fileContent += "\r\n};\r\n\r\n";
             }
 
