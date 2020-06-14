@@ -464,7 +464,25 @@ namespace SpriteEditor
 
             if (saveFileDialog.FileName != "")
             {
-                SaveFile(saveFileDialog.FileName);
+                SaveFile(saveFileDialog.FileName, false);
+            }
+        }
+
+        /// <summary>
+        /// Save a file with raw sprite data 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void saveRawToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "";
+            saveFileDialog.Title = "Save a sprite raw data file";
+            saveFileDialog.ShowDialog();
+
+            if (saveFileDialog.FileName != "")
+            {
+                SaveFile(saveFileDialog.FileName, true);
             }
         }
 
@@ -1041,36 +1059,41 @@ namespace SpriteEditor
         /// Save header file
         /// </summary>
         /// <param name="fileName"></param>
-        private void SaveFile(string fileName)
+        /// <param name="rawFormat"></param>
+        private void SaveFile(string fileName, bool rawFormat)
         {
             string fileContent = "";
-            fileContent += "char* ptrSprite_0_Color = (char*)0xD027;\r\n";
-            fileContent += "char* ptrSprite_1_Color = (char*)0xD028;\r\n";
-            fileContent += "char* ptrSprite_2_Color = (char*)0xD029;\r\n";
-            fileContent += "char* ptrSprite_3_Color = (char*)0xD02A;\r\n";
-            fileContent += "char* ptrSprite_4_Color = (char*)0xD02B;\r\n";
-            fileContent += "char* ptrSprite_5_Color = (char*)0xD02C;\r\n";
-            fileContent += "char* ptrSprite_6_Color = (char*)0xD02D;\r\n";
-            fileContent += "char* ptrSprite_7_Color = (char*)0xD02E;\r\n\r\n";
 
-            fileContent += "\r\n";
-            fileContent += "char* ptrSpritesMultiColor  = (char*)0xD01C;\r\n";
-            fileContent += "char* ptrSpriteMultiColor_0 = (char*)0xD025;\r\n";
-            fileContent += "char* ptrSpriteMultiColor_1 = (char*)0xD026;\r\n\r\n";
+            if (!rawFormat)
+            {
+                fileContent += "char* ptrSprite_0_Color = (char*)0xD027;\r\n";
+                fileContent += "char* ptrSprite_1_Color = (char*)0xD028;\r\n";
+                fileContent += "char* ptrSprite_2_Color = (char*)0xD029;\r\n";
+                fileContent += "char* ptrSprite_3_Color = (char*)0xD02A;\r\n";
+                fileContent += "char* ptrSprite_4_Color = (char*)0xD02B;\r\n";
+                fileContent += "char* ptrSprite_5_Color = (char*)0xD02C;\r\n";
+                fileContent += "char* ptrSprite_6_Color = (char*)0xD02D;\r\n";
+                fileContent += "char* ptrSprite_7_Color = (char*)0xD02E;\r\n\r\n";
+
+                fileContent += "\r\n";
+                fileContent += "char* ptrSpritesMultiColor  = (char*)0xD01C;\r\n";
+                fileContent += "char* ptrSpriteMultiColor_0 = (char*)0xD025;\r\n";
+                fileContent += "char* ptrSpriteMultiColor_1 = (char*)0xD026;\r\n\r\n";
+            }
 
             for (int i = 0; i < Constants.NUM_SPRITES; i++)
             {
-                fileContent += "/* SPRITE " + i.ToString() + ": ";
-                fileContent += spriteMultiColor[i] ? "Multicolor */\r\n" : "Hi-Res */\r\n";
+                if (!rawFormat) fileContent += "/* SPRITE " + i.ToString() + ": ";
+                if (!rawFormat) fileContent += spriteMultiColor[i] ? "Multicolor */\r\n" : "Hi-Res */\r\n";
 
-                fileContent += "const unsigned char sprite" + i.ToString() + "[] = \r\n{\r\n";
+                if (!rawFormat) fileContent += "const unsigned char sprite" + i.ToString() + "[] = \r\n{\r\n";
 
                 string[] lines = new string[21];
                 string[] comment = new string[21];
 
                 for (int row = 0; row < Constants.SPRITE_HEIGHT; row++)
                 {
-                    lines[row] = "    ";
+                    if (!rawFormat) lines[row] = "    ";
                     comment[row] = "/* ";
 
                     for (int column = 0; column < Constants.SPRITE_WIDTH; column += 8)
@@ -1099,7 +1122,7 @@ namespace SpriteEditor
                             }
                         }
 
-                        lines[row] += "0x";
+                        if (!rawFormat) lines[row] += "0x"; else lines[row] += "$";
                         lines[row] += string.Format("{0:X2}", data) + ", ";
                     }
 
@@ -1116,34 +1139,38 @@ namespace SpriteEditor
                         fileContent += "  ";
                     }
 
-                    fileContent += comment[j];
+                    if (!rawFormat) fileContent += comment[j];
                     if (j != lines.Length - 1) fileContent += "\r\n";
                 }
 
-                fileContent += "\r\n};\r\n\r\n";
+                if (!rawFormat) fileContent += "\r\n};";
+                fileContent += "\r\n\r\n";
             }
 
-            fileContent += "void Init()\r\n{\r\n";
-
-            for (int i = 0; i < Constants.NUM_SPRITES; i++)
+            if (!rawFormat)
             {
-                fileContent += "    *ptrSprite_" + i.ToString() + "_Color = 0x" + string.Format("{0:X2}", spriteColorIndex[i]) + ";\r\n";
+                fileContent += "void Init()\r\n{\r\n";
+
+                for (int i = 0; i < Constants.NUM_SPRITES; i++)
+                {
+                    fileContent += "    *ptrSprite_" + i.ToString() + "_Color = 0x" + string.Format("{0:X2}", spriteColorIndex[i]) + ";\r\n";
+                }
+
+                // Pseudo variable for loading this file into the editor again
+                fileContent += "\r\n    // spritesBackGroundColor = 0x" + string.Format("{0:X4}", panelSpriteBackgroundColor.BackColor.ToArgb()) + ";\r\n";
+
+                byte spritesMultiColor = 0x00;
+                for (int i = 0; i < Constants.NUM_SPRITES; i++)
+                {
+                    spritesMultiColor += spriteMultiColor[i] ? (byte)(Math.Pow(2, i)) : (byte)0;
+                }
+
+                fileContent += "    *ptrSpritesMultiColor  = 0b" + Convert.ToString(spritesMultiColor, 2).PadLeft(8, '0') + ";\r\n";
+                fileContent += "    *ptrSpriteMultiColor_0 = 0x" + string.Format("{0:X2}", spriteMultiColor0Index) + ";\r\n";
+                fileContent += "    *ptrSpriteMultiColor_1 = 0x" + string.Format("{0:X2}", spriteMultiColor1Index) + ";\r\n";
+
+                fileContent += "}\r\n";
             }
-
-            // Pseudo variable for loading this file into the editor again
-            fileContent += "\r\n    // spritesBackGroundColor = 0x" + string.Format("{0:X4}", panelSpriteBackgroundColor.BackColor.ToArgb()) + ";\r\n";
-
-            byte spritesMultiColor = 0x00;
-            for (int i = 0; i < Constants.NUM_SPRITES; i++)
-            {
-                spritesMultiColor += spriteMultiColor[i] ? (byte)(Math.Pow(2, i)) : (byte)0;
-            }
-
-            fileContent += "    *ptrSpritesMultiColor  = 0b" + Convert.ToString(spritesMultiColor, 2).PadLeft(8, '0') + ";\r\n";
-            fileContent += "    *ptrSpriteMultiColor_0 = 0x" + string.Format("{0:X2}", spriteMultiColor0Index) + ";\r\n";
-            fileContent += "    *ptrSpriteMultiColor_1 = 0x" + string.Format("{0:X2}", spriteMultiColor1Index) + ";\r\n";
-
-            fileContent += "}\r\n";
 
             try
             {

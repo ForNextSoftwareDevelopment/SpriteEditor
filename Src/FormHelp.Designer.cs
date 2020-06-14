@@ -37,7 +37,7 @@
             // 
             this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExit.Font = new System.Drawing.Font("Georgia", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExit.Location = new System.Drawing.Point(697, 532);
+            this.btnExit.Location = new System.Drawing.Point(747, 532);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(75, 26);
             this.btnExit.TabIndex = 1;
@@ -56,7 +56,7 @@
             this.rtbInfo.Name = "rtbInfo";
             this.rtbInfo.ReadOnly = true;
             this.rtbInfo.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rtbInfo.Size = new System.Drawing.Size(760, 514);
+            this.rtbInfo.Size = new System.Drawing.Size(810, 514);
             this.rtbInfo.TabIndex = 2;
             this.rtbInfo.Text = resources.GetString("rtbInfo.Text");
             // 
@@ -64,7 +64,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 561);
+            this.ClientSize = new System.Drawing.Size(834, 561);
             this.Controls.Add(this.rtbInfo);
             this.Controls.Add(this.btnExit);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

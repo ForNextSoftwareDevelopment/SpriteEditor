@@ -144,8 +144,10 @@ This is unavoidable because a 2 bit horizontal `multicolor dot` will be transfer
 There is no elegant way to solve this tho.  
 
 In the menu you can load and save (or export as png) your sprites.
-It will generate a .h file and also expect one when loading a file.
-Also this file will contain the color information for this sprite and it will show the sprite in comment fields ( between /* and */ ).
+It will generate a .h file and expect the same when loading a file.
+Also this file will contain the color information for the sprites and it will show the sprites in comment fields ( between /* and */ ).
+
+Saving in RAW format is also posible, this will generate a file with only the hexadecimal values (with a $ prefix).
 
 Have fun.
 Dirk Prins.
