@@ -130,7 +130,7 @@ Drawing with the left mousebutton to draw the selected color or right mousebutto
 Selection of a sprite (8 in total) can be done by the vertical preview panel on the right.
 At the far right is the data that will be generated for this sprite.
 
-Below the draw screen are selections for the sprite to be in `hi-color` or `multi-color`.
+Below the draw screen are selections for the sprite to be in `HiRes` or `MultiColor`.
 In multicolor the sprite will be drawn in horizontal `pixel-pairs` in stead of single pixels. 
 
 Below this are selections for the colors (each sprite can have it's own color, multicolors are common to all sprites).
@@ -152,7 +152,7 @@ Dirk Prins.
 
 dirk.prins@yahoo.com
 info@fornext.nl
- </value>
+  </value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
